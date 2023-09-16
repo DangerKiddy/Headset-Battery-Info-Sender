@@ -13,6 +13,7 @@ import com.illposed.osc.argument.handler.Activator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String HEADSET_COMPANY = "pico";
     public static MainActivity instance;
     private OSCSerializerAndParserBuilder serializer;
     private OSCController controller;
@@ -39,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
     {
         instance.controller = new OSCController(host, GetSerializer());
         instance.controller.CreateSender();
+    }
+    public static void NotifyHeadsetCompany()
+    {
+        instance.controller.Send("/battery/headset/company", HEADSET_COMPANY);
     }
     void setupSerializer()
     {

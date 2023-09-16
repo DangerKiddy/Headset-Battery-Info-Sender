@@ -8,6 +8,8 @@ import com.illposed.osc.OSCMessage;
 import com.illposed.osc.transport.OSCPortIn;
 import com.illposed.osc.transport.OSCPortOut;
 
+import org.apache.log4j.chainsaw.Main;
+
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Arrays;
@@ -77,6 +79,7 @@ public class OSCController {
                         Log.i("OSC", "Found battery streaming device " + sender);
 
                         MainActivity.SetOSCController((String)event.getMessage().getArguments().get(0));
+                        MainActivity.NotifyHeadsetCompany();
                     }
                 }
             });
