@@ -21,8 +21,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         instance = this;
 
-        System.loadLibrary("openxr_loader");
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -62,13 +60,13 @@ public class MainActivity extends AppCompatActivity {
         BatteryManager batteryManager = (BatteryManager) getSystemService(BATTERY_SERVICE);
 
         if (controller != null) {
-            controller.Send("/battery/level", batteryLevel);
+            controller.Send("/battery/headset/level", batteryLevel);
 
             if (isCharging != wasCharging)
             {
                 wasCharging = isCharging;
 
-                controller.Send("/battery/charging", isCharging);
+                controller.Send("/battery/headset/charging", isCharging);
             }
         }
     }
