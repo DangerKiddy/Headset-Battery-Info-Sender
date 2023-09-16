@@ -18,8 +18,9 @@ public class BatteryReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-        int deviceStatus = intent.getIntExtra(BatteryManager.EXTRA_STATUS,-1);
+        int deviceStatus = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED,-1);
+        boolean isPlugged = deviceStatus == BatteryManager.BATTERY_PLUGGED_AC || deviceStatus == BatteryManager.BATTERY_PLUGGED_USB;
 
-        mainActivity.sendBatteryLevel(level, deviceStatus == BatteryManager.BATTERY_STATUS_CHARGING);
+        mainActivity.sendBatteryLevel(level, isPlugged);
     }
 }

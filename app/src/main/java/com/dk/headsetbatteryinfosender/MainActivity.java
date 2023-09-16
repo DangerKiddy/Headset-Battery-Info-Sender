@@ -55,14 +55,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private static int lastBatteryLevel = -1;
     private static boolean wasCharging = false;
     void sendBatteryLevel(int batteryLevel, boolean isCharging) {
         BatteryManager batteryManager = (BatteryManager) getSystemService(BATTERY_SERVICE);
 
         if (controller != null) {
-            controller.Send("/battery/headset/level", batteryLevel);
+            if (lastBatteryLevel != batteryLevel)
+            {
+                lastBatteryLevel = batteryLevel;
 
-            if (isCharging != wasCharging)
+                controller.Send("/battery/headset/level", batteryLevel);
+            }
+
+            if ((!wasCharging && isCharging) || (wasCharging && !isCharging))
             {
                 wasCharging = isCharging;
 
