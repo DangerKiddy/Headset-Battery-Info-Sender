@@ -15,6 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HeadsetBatteryInfoSender"
         tools:targetApi="31">
+        <service android:name=".BatteryService" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

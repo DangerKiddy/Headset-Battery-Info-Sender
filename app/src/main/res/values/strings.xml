@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Headset Battery Info Sender</string>
+    <string name="preference_file_key">headset_batt_info_sender</string>
 </resources>

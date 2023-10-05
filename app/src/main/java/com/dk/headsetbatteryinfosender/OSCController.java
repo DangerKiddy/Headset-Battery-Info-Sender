@@ -20,6 +20,7 @@ public class OSCController {
     private final String host;
     private final OSCSerializerAndParserBuilder serializer;
     private OSCPortOut sender;
+    private OSCPortIn receiver;
     public OSCController(String host, OSCSerializerAndParserBuilder serializer)
     {
         this.host = host;
@@ -59,7 +60,7 @@ public class OSCController {
 
         OSCController controller = this;
         try {
-            OSCPortIn receiver = new OSCPortIn(port);
+            receiver = new OSCPortIn(port);
 
             receiver.getDispatcher().addListener(new MessageSelector() {
                 @Override
@@ -76,9 +77,14 @@ public class OSCController {
                 public void acceptMessage(OSCMessageEvent event) {
                     if (Objects.equals(event.getMessage().getAddress(), "/confirmAddress"))
                     {
-                        Log.i("OSC", "Found battery streaming device " + sender);
+                        String ip = (String)event.getMessage().getArguments().get(0);
+                        String name = NetworkScanTask.GetNetworkName(ip);
+                        Log.i("OSC", "Found battery streaming device " + sender + "(" + name + ")");
+                        MainActivity.SetStatusText("Found device (" + name + "), connection complete");
 
-                        MainActivity.SetOSCController((String)event.getMessage().getArguments().get(0));
+                        NetworkScanTask.CloseAllTestConnection();
+
+                        MainActivity.SetOSCController(ip, name);
                         MainActivity.NotifyHeadsetCompany();
                     }
                 }
@@ -125,6 +131,17 @@ public class OSCController {
             }
 
             return null;
+        }
+    }
+
+    public void Close() {
+        try {
+            if (sender != null)
+                sender.close();
+            if (receiver != null)
+                receiver.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
