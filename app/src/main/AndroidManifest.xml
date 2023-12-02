@@ -20,16 +20,8 @@
             <intent-filter android:priority="1001" >
                 <action android:name="com.dk.headsetbatteryinfosender.BatteryService" />
             </intent-filter>
-        </service>>
-        <service android:name=".BackgroundService" android:exported="false">
-            <intent-filter android:priority="1000" >
-                <action android:name="com.dk.headsetbatteryinfosender.BackgroundService" />
-            </intent-filter>
-        </service>>
+        </service>
 
-        <service
-            android:name=".BackgroundJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
