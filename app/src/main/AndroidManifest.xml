@@ -4,6 +4,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -15,7 +16,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HeadsetBatteryInfoSender"
         tools:targetApi="31">
-        <service android:name=".BatteryService" />
+        <service android:name=".BatteryService" android:exported="false">
+            <intent-filter android:priority="1001" >
+                <action android:name="com.dk.headsetbatteryinfosender.BatteryService" />
+            </intent-filter>
+        </service>>
+        <service android:name=".BackgroundService" android:exported="false">
+            <intent-filter android:priority="1000" >
+                <action android:name="com.dk.headsetbatteryinfosender.BackgroundService" />
+            </intent-filter>
+        </service>>
+
+        <service
+            android:name=".BackgroundJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

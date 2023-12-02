@@ -88,6 +88,7 @@ class NetworkScanTask extends AsyncTask<Void, Void, Void> {
         } catch (Exception e) {
             MainActivity.SetStatusText("Unable to connect to the last used device, re-scanning network");
             e.printStackTrace();
+            MainActivity.SetErrorText(e.getMessage());
 
             MainActivity.SetLastUsedDeviceName("");
             MainActivity.StartNetworkScan();
@@ -116,7 +117,7 @@ class NetworkScanTask extends AsyncTask<Void, Void, Void> {
 
                     deviceNetworkNames.put(testIp, hostName);
 
-                    MainActivity.SetStatusText("Searching device " + i + "/255...");
+                    MainActivity.SetStatusText("Searching device " + i + "/255..." + "\nTrying access " + hostName + "(" + (testIp) + ")");
 
                     OSCController testConnection = new OSCController(testIp, serializer);
                     oscTestConnections.put(testIp, testConnection);

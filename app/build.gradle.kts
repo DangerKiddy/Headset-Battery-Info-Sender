@@ -32,7 +32,7 @@ android {
 }
 
 dependencies {
-
+    implementation("androidx.work:work-runtime:2.7.0")
     implementation("com.illposed.osc:javaosc-core:0.8")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")

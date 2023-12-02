@@ -13,7 +13,6 @@ public class BatteryReceiver extends BroadcastReceiver {
         int deviceStatus = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED,-1);
         boolean isPlugged = deviceStatus == BatteryManager.BATTERY_PLUGGED_AC || deviceStatus == BatteryManager.BATTERY_PLUGGED_USB;
 
-        Log.i("OSC", "Received new battery info: " + level + "," + isPlugged);
         MainActivity.SendBatteryLevel(level, isPlugged);
     }
 }

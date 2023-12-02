@@ -47,7 +47,8 @@ public class OSCController {
 
             sender.connect();
         } catch (Exception e) {
-            e.printStackTrace();
+            MainActivity.SetErrorText(e.getMessage());
+            //e.printStackTrace();
         }
     }
     public void Send(String address, Object data)
@@ -75,17 +76,27 @@ public class OSCController {
             }, new OSCMessageListener() {
                 @Override
                 public void acceptMessage(OSCMessageEvent event) {
-                    if (Objects.equals(event.getMessage().getAddress(), "/confirmAddress"))
+                    try {
+                        if (Objects.equals(event.getMessage().getAddress(), "/confirmAddress"))
+                        {
+                            String ip = (String)event.getMessage().getArguments().get(0);
+                            String name = NetworkScanTask.GetNetworkName(ip);
+                            Log.i("OSC", "Found battery streaming device " + sender + "(" + name + ")");
+                            MainActivity.SetStatusText("Found device (" + name + "), connection complete");
+
+                            NetworkScanTask.CloseAllTestConnection();
+
+                            MainActivity.SetOSCController(ip, name);
+                            MainActivity.NotifyHeadsetCompany();
+                        }
+                        else if (Objects.equals(event.getMessage().getAddress(), "/requestBatteryInfo"))
+                        {
+                            MainActivity.UpdateBatteryLevelAndSend();
+                        }
+                    }
+                    catch (Exception e)
                     {
-                        String ip = (String)event.getMessage().getArguments().get(0);
-                        String name = NetworkScanTask.GetNetworkName(ip);
-                        Log.i("OSC", "Found battery streaming device " + sender + "(" + name + ")");
-                        MainActivity.SetStatusText("Found device (" + name + "), connection complete");
-
-                        NetworkScanTask.CloseAllTestConnection();
-
-                        MainActivity.SetOSCController(ip, name);
-                        MainActivity.NotifyHeadsetCompany();
+                        MainActivity.SetErrorText(e.getMessage());
                     }
                 }
             });
@@ -94,7 +105,8 @@ public class OSCController {
 
             Log.i("OSC", "Starting to listen...");
         } catch (Exception e) {
-            e.printStackTrace();
+            MainActivity.SetErrorText(e.getMessage());
+            //e.printStackTrace();
         }
     }
     private class SendIPTest extends AsyncTask<String, Void, Void> {
@@ -109,7 +121,8 @@ public class OSCController {
             try {
                 sender.send(message);
             } catch (Exception e) {
-                e.printStackTrace();
+                MainActivity.SetErrorText(e.getMessage());
+                //e.printStackTrace();
             }
 
             return null;
@@ -127,7 +140,8 @@ public class OSCController {
             try {
                 sender.send(message);
             } catch (Exception e) {
-                e.printStackTrace();
+                MainActivity.SetErrorText(e.getMessage());
+                //e.printStackTrace();
             }
 
             return null;
@@ -141,7 +155,8 @@ public class OSCController {
             if (receiver != null)
                 receiver.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            MainActivity.SetErrorText(e.getMessage());
+            //e.printStackTrace();
         }
     }
 }
