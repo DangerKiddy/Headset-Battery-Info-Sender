@@ -88,10 +88,7 @@ public class OSCController {
 
                             MainActivity.SetOSCController(ip, name);
                             MainActivity.NotifyHeadsetCompany();
-                        }
-                        else if (Objects.equals(event.getMessage().getAddress(), "/requestBatteryInfo"))
-                        {
-                            MainActivity.UpdateBatteryLevelAndSend();
+                            MainActivity.GetBatteryInfoAndSend();
                         }
                     }
                     catch (Exception e)

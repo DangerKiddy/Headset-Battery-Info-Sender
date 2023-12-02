@@ -37,9 +37,6 @@ public class BatteryService extends Service {
 
     @Override
     public void onDestroy() {
-        //Intent service = new Intent(this, BatteryService.class);
-        //startService(service);
-
         super.onDestroy();
     }
 }

@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         StartNetworkScan();
-        RegisterAllServices();
+        InitBatteryService();
     }
     public static void SetStatusText(String text)
     {
@@ -94,11 +94,7 @@ public class MainActivity extends AppCompatActivity {
         instance.handler.post(() -> instance.scanAgain.setEnabled(true));
     }
 
-    // Sadly Android does not allows to do any kind of background job/work/whatever without
-    // any limitations. Some things are work, some are not, some of them work *sometimes*, and so on.
-    // I've kept all possible services to keep track of battery state as much as possible, in case if
-    // any another service dies
-    private void RegisterAllServices()
+    private void InitBatteryService()
     {
         NotificationManager nm = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         nm.createNotificationChannel(new NotificationChannel("HBI_NTF_CHNL", "Something", NotificationManager.IMPORTANCE_DEFAULT));
@@ -106,23 +102,6 @@ public class MainActivity extends AppCompatActivity {
         Intent batteryServiceIntent = new Intent(this, BatteryService.class);
 
         startService(batteryServiceIntent);
-        BackgroundManager.startWork();
-        StartBackgroundService();
-
-        JobScheduler jobScheduler = (JobScheduler) getApplicationContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
-
-        ComponentName serviceName = new ComponentName(getApplicationContext(), BackgroundJobService.class);
-        JobInfo.Builder builder = new JobInfo.Builder(123, serviceName);
-
-        builder.setPeriodic(15 * 60 * 1000);
-
-        JobInfo jobInfo = builder.build();
-        jobScheduler.schedule(jobInfo);
-    }
-
-    public void StartBackgroundService()
-    {
-        startService(new Intent(this, BackgroundService.class));
     }
 
     public static OSCSerializerAndParserBuilder GetSerializer()
@@ -174,23 +153,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static boolean UpdateBatteryLevelAndSend()
+    public static void GetBatteryInfoAndSend()
     {
-        if (instance == null)
-            return false;
-
-        Context context = instance.getApplicationContext();
-        if (context == null)
-            return false;
-
-        BatteryManager bm = (BatteryManager) context.getSystemService(BATTERY_SERVICE);
+        BatteryManager bm = (BatteryManager) instance.getApplicationContext().getSystemService(BATTERY_SERVICE);
         int batLevel = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
         int batStatus = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_STATUS);
 
         boolean isCharging = batStatus == BatteryManager.BATTERY_STATUS_CHARGING;
         SendBatteryLevel(batLevel, isCharging);
-
-        return isCharging;
     }
 
     public static void SendBatteryLevel(int batteryLevel, boolean isCharging) {
@@ -198,14 +168,14 @@ public class MainActivity extends AppCompatActivity {
     }
     void sendBatteryLevel(int batteryLevel, boolean isCharging) {
         if (controller != null) {
-            //if (lastBatteryLevel != batteryLevel)
+            if (lastBatteryLevel != batteryLevel)
             {
                 lastBatteryLevel = batteryLevel;
 
                 controller.Send("/battery/headset/level", batteryLevel);
             }
 
-            //if ((!wasCharging && isCharging) || (wasCharging && !isCharging))
+            if ((!wasCharging && isCharging) || (wasCharging && !isCharging))
             {
                 wasCharging = isCharging;
 
